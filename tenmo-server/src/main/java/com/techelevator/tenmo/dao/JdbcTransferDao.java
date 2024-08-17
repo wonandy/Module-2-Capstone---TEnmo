@@ -4,6 +4,7 @@ import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferDetailsDto;
 import com.techelevator.tenmo.model.TransferDto;
+import com.techelevator.tenmo.model.TransferPendingDto;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlInOutParameter;
@@ -101,6 +102,28 @@ public class JdbcTransferDao implements TransferDao{
         }
         return transferDetail;
     }
+    @Override
+    public List<TransferPendingDto> getPendingTransfers(int userId) {
+        List<TransferPendingDto> pendingRequests = new ArrayList<>();
+        String sql = "SELECT transfer_id, afu.username as account_from, amount " +
+                "FROM transfer AS t " +
+                "JOIN account af ON t.account_from = af.account_id " +
+                "JOIN tenmo_user afu ON af.user_id = afu.user_id " +
+                "JOIN transfer_status AS ts " +
+                "    ON t.transfer_status_id = ts.transfer_status_id " +
+                "WHERE ts.transfer_status_desc = 'Pending' " +
+                "AND account_to = ?;";
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            while (results.next()) {
+                TransferPendingDto pendingRequest = mapRowToTransferPendingDto(results);
+                pendingRequests.add(pendingRequest);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+        return pendingRequests;
+    }
 
     private Transfer mapRowToTransfer(SqlRowSet rs){
         Transfer transfer = new Transfer();
@@ -120,6 +143,16 @@ public class JdbcTransferDao implements TransferDao{
         transfer.setTransferId(rs.getInt("transfer_id"));
         transfer.setAccountFrom(rs.getString("account_from"));
         transfer.setAccountTo(rs.getString("account_to"));
+        transfer.setAmount(rs.getBigDecimal("amount"));
+
+        return transfer;
+    }
+
+    private TransferPendingDto mapRowToTransferPendingDto(SqlRowSet rs) {
+        TransferPendingDto transfer = new TransferPendingDto();
+
+        transfer.setTransferId(rs.getInt("transfer_id"));
+        transfer.setAccountFrom(rs.getString("account_from"));
         transfer.setAmount(rs.getBigDecimal("amount"));
 
         return transfer;

@@ -46,6 +46,16 @@ public class TransferController {
         return transferDao.getTransferDetailsById(id);
     }
 
+    @GetMapping("/pending")
+    public List<TransferPendingDto> getPending(Principal principal) {
+
+        Account account = accountDao.getAccountByUsername(principal.getName());
+
+        List<TransferPendingDto> pendingTransfers = transferDao.getPendingTransfers(account.getAccountId());
+
+        return pendingTransfers;
+    }
+
 
     @PostMapping("/send")
     public ResponseEntity<String> sendTeBucks(Principal principal, @RequestBody TransferRequestDto transferRequestDto) {

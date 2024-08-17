@@ -3,6 +3,7 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferDetailsDto;
 import com.techelevator.tenmo.model.TransferDto;
+import com.techelevator.tenmo.model.TransferPendingDto;
 
 import java.util.List;
 
@@ -14,6 +15,6 @@ public interface TransferDao {
 
     TransferDetailsDto getTransferDetailsById(int transferId);
 
-
+    List<TransferPendingDto> getPendingTransfers(int userId);
     Transfer getTransferById(int transferId);
 }
