@@ -5,6 +5,7 @@ import com.techelevator.tenmo.model.TransferDetailsDto;
 import com.techelevator.tenmo.model.TransferDto;
 import com.techelevator.tenmo.model.TransferPendingDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface TransferDao {
@@ -17,4 +18,6 @@ public interface TransferDao {
 
     List<TransferPendingDto> getPendingTransfers(int userId);
     Transfer getTransferById(int transferId);
+
+//    TransferDetailsDto sendRequest(int accountFrom, int accountTo, BigDecimal ammount);
 }

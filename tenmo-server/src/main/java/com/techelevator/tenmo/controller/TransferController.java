@@ -92,4 +92,19 @@ public class TransferController {
 
         return ResponseEntity.status(201).body("Transfer approved");
     }
+
+    @PostMapping("/request")
+    public ResponseEntity<String> postTransferRequest(Principal principal, @RequestBody TransferRequestDto transferRequestDto){
+
+        //get to and from account IDs
+        Account accountFrom = accountDao.getAccountByUsername(principal.getName());
+        Account accountTo = accountDao.getAccountByUserId(transferRequestDto.getUserTo());
+
+        //Create a transfer of type request and status of pending
+        Transfer transfer = new Transfer(1,1,accountFrom.getAccountId(),accountTo.getAccountId(),transferRequestDto.getAmount());
+        transferDao.createTransfer(transfer);
+
+        return ResponseEntity.status(201).body("Transfer request sent to user: " + transferRequestDto.getUserTo());
+
+    }
 }
