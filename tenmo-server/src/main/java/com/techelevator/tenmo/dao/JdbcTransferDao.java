@@ -24,7 +24,7 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public Integer getTransferStatusIdByDesc(StatusRequest status) {
+    public Integer getTransferStatusIdByDesc(String status) {
         String sql = "SELECT transfer_status_id " +
                 "FROM transfer_status " +
                 "WHERE LOWER(TRIM(transfer_status_desc)) = LOWER(TRIM(?))";

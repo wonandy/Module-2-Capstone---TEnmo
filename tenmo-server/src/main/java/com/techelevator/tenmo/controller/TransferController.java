@@ -129,11 +129,11 @@ public class TransferController {
             }
 
             // Get status ID and validate
-            int statusId = transferDao.getTransferStatusIdByDesc(status);
+            int statusId = transferDao.getTransferStatusIdByDesc(status.getStatus());
             log.info("statusId"+ statusId);
             log.error("statusId" + statusId);
             if (statusId == 0) {
-                log.error("Status description '{}' does not match any status ID.", status);
+                log.error("Status description '{}' does not match any status ID.", status.getStatus());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status description.");
             }
             transfer.setTransferStatusId(statusId);

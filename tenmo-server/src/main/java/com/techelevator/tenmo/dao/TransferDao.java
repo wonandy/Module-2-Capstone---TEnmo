@@ -8,7 +8,7 @@ import java.util.List;
 public interface TransferDao {
 
 
-    Integer getTransferStatusIdByDesc(StatusRequest status);
+    Integer getTransferStatusIdByDesc(String status);
     Transfer createTransfer(Transfer transfer);
     List<TransferDto> getTransfersByUserId(int userId);
 
