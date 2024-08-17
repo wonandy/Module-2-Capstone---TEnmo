@@ -36,11 +36,13 @@ public class TransferController {
 
     @GetMapping
     public List<TransferDto> getTransfers(Principal principal){
+        log.info(principal.getName()+ " getting list of transfers they are either the reciever or sender to");
         User user = userDao.getUserByUsername(principal.getName());
         return transferDao.getTransfersByUserId(user.getId());
     }
     @GetMapping(path = "/{id}")
     public TransferDetailsDto getTransferDetailsById(@PathVariable int id){
+        log.info("getting transfer details for transfer with ID: " + id);
         return transferDao.getTransferDetailsById(id);
     }
 
