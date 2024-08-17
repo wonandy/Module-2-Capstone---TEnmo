@@ -74,7 +74,7 @@ public class JdbcAccountDao implements AccountDao{
         }
     }
 
-    private Account getAccountById(int accountId) {
+    public Account getAccountById(int accountId) {
         Account account = null;
         String sql = "SELECT account_id, user_id, balance FROM account WHERE account_id = ?";
         try {

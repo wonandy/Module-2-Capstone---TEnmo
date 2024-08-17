@@ -13,4 +13,6 @@ public interface AccountDao {
     Account getAccountByUserId(int userId);
 
     Account updateAccount(Account updatedAccount);
+
+    Account getAccountById(int accountId);
 }

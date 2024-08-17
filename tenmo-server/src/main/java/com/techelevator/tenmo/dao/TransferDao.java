@@ -1,9 +1,6 @@
 package com.techelevator.tenmo.dao;
 
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.TransferDetailsDto;
-import com.techelevator.tenmo.model.TransferDto;
-import com.techelevator.tenmo.model.TransferPendingDto;
+import com.techelevator.tenmo.model.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,6 +8,7 @@ import java.util.List;
 public interface TransferDao {
 
 
+    Integer getTransferStatusIdByDesc(StatusRequest status);
     Transfer createTransfer(Transfer transfer);
     List<TransferDto> getTransfersByUserId(int userId);
 

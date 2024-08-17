@@ -1,10 +1,9 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.exception.DaoException;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.TransferDetailsDto;
-import com.techelevator.tenmo.model.TransferDto;
-import com.techelevator.tenmo.model.TransferPendingDto;
+import com.techelevator.tenmo.model.*;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlInOutParameter;
@@ -25,6 +24,24 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
+    public Integer getTransferStatusIdByDesc(StatusRequest status) {
+        String sql = "SELECT transfer_status_id " +
+                "FROM transfer_status " +
+                "WHERE LOWER(TRIM(transfer_status_desc)) = LOWER(TRIM(?))";
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, status);
+        } catch (EmptyResultDataAccessException e) {
+            // Handle the case where no result is found
+            return null;
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataAccessException e) {
+            // Handle other potential DataAccessExceptions
+            throw new DaoException("Database access error occurred", e);
+        }
+    }
+
+    @Override
     public Transfer createTransfer(Transfer transfer) {
         Transfer newTransfer = null;
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id,account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) " +
@@ -40,6 +57,8 @@ public class JdbcTransferDao implements TransferDao{
         return newTransfer;
 
     }
+
+
 
     @Override
     public Transfer getTransferById(int transferId) {
