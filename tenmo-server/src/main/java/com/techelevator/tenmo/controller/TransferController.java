@@ -86,7 +86,8 @@ public class TransferController {
         //Create new transfer of type Send and status Approved
         Transfer transfer = new Transfer(2,2,accountFrom.getAccountId(),accountTo.getAccountId(),amount);
 
-        transferDao.createTransfer(transfer);
+        Transfer newTransfer = transferDao.createTransfer(transfer);
+        log.info(newTransfer.getTransferId() + " Created");
 
         log.info(principal.getName() + " Succesfully sent $" + transferRequestDto.getAmount() +" to user: " + transferRequestDto.getUserTo());
 
@@ -102,7 +103,8 @@ public class TransferController {
 
         //Create a transfer of type request and status of pending
         Transfer transfer = new Transfer(1,1,accountFrom.getAccountId(),accountTo.getAccountId(),transferRequestDto.getAmount());
-        transferDao.createTransfer(transfer);
+        Transfer newTransfer = transferDao.createTransfer(transfer);
+        log.info(newTransfer.getTransferId() + " Created");
 
         return ResponseEntity.status(201).body("Transfer request sent to user: " + transferRequestDto.getUserTo());
 

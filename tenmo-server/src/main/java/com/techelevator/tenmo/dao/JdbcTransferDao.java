@@ -31,7 +31,7 @@ public class JdbcTransferDao implements TransferDao{
                 "RETURNING transfer_id";
 
         try {
-            int newTransferId = jdbcTemplate.queryForObject(sql, int.class, 2, 2, transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getAmount());
+            int newTransferId = jdbcTemplate.queryForObject(sql, int.class, transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getAmount());
             newTransfer = getTransferById(newTransferId);
 
         } catch (CannotGetJdbcConnectionException e) {
@@ -103,7 +103,7 @@ public class JdbcTransferDao implements TransferDao{
         return transferDetail;
     }
     @Override
-    public List<TransferPendingDto> getPendingTransfers(int userId) {
+    public List<TransferPendingDto> getPendingTransfers(int accountId) {
         List<TransferPendingDto> pendingRequests = new ArrayList<>();
         String sql = "SELECT transfer_id, afu.username as account_from, amount " +
                 "FROM transfer AS t " +
@@ -114,7 +114,7 @@ public class JdbcTransferDao implements TransferDao{
                 "WHERE ts.transfer_status_desc = 'Pending' " +
                 "AND account_to = ?;";
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
             while (results.next()) {
                 TransferPendingDto pendingRequest = mapRowToTransferPendingDto(results);
                 pendingRequests.add(pendingRequest);
