@@ -31,12 +31,11 @@ public class JdbcTransferDao implements TransferDao{
         try {
             return jdbcTemplate.queryForObject(sql, Integer.class, status);
         } catch (EmptyResultDataAccessException e) {
-            // Handle the case where no result is found
             return null;
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataAccessException e) {
-            // Handle other potential DataAccessExceptions
+
             throw new DaoException("Database access error occurred", e);
         }
     }
@@ -76,6 +75,24 @@ public class JdbcTransferDao implements TransferDao{
             throw new DaoException("Unable to connect to server or database", e);
         }
         return transfer;
+    }
+
+    @Override
+    public Transfer updateTransfer(Transfer updatedTransfer) {
+
+        String sql = "UPDATE transfer SET transfer_type_id = ?, transfer_status_id = ?, account_from = ?, account_to = ?, amount = ? " +
+                "WHERE transfer_id = ?";
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, updatedTransfer.getTransferTypeId(), updatedTransfer.getTransferStatusId(),updatedTransfer.getAccountFromId(), updatedTransfer.getAccountToId(), updatedTransfer.getAmount(), updatedTransfer.getTransferId() );
+            if (rowsAffected > 0) {
+
+                return getTransferById(updatedTransfer.getTransferId());
+            } else {
+                throw new DaoException("transfer update failed, no rows affected");
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        }
     }
 
     @Override

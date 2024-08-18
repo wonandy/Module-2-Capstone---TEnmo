@@ -17,5 +17,6 @@ public interface TransferDao {
     List<TransferPendingDto> getPendingTransfers(int userId);
     Transfer getTransferById(int transferId);
 
+    Transfer updateTransfer(Transfer updatedTransfer);
 //    TransferDetailsDto sendRequest(int accountFrom, int accountTo, BigDecimal ammount);
 }
