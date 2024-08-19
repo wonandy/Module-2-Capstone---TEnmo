@@ -1,12 +1,14 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.dto.TransferDetailsDto;
+import com.techelevator.tenmo.dto.TransferDto;
+import com.techelevator.tenmo.dto.TransferPendingDto;
 import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.*;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.SqlInOutParameter;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 

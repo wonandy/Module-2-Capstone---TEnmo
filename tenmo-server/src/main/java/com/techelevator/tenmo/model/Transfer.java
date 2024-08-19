@@ -1,11 +1,14 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 public class Transfer {
     private int transferId;
+    @NotBlank(message = "The field `transferTypeId` should not be blank.")
     private int transferTypeId;
 
+    @NotBlank(message = "The field `transferStatusId` should not be blank.")
     private int transferStatusId;
     private int accountFromId;
     private int accountToId;

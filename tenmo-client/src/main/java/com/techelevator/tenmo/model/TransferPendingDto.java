@@ -34,4 +34,9 @@ public class TransferPendingDto {
 
     public void setTranferId(int transferId) {
     }
+    @Override
+    public String toString() {
+        return String.format("TransferPendingDto [transferId=%d, accountFrom=%s, amount=%s]",
+                transferId, accountFrom, amount);
+    }
 }

@@ -1,8 +1,10 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.dto.TransferDetailsDto;
+import com.techelevator.tenmo.dto.TransferDto;
+import com.techelevator.tenmo.dto.TransferPendingDto;
 import com.techelevator.tenmo.model.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface TransferDao {
