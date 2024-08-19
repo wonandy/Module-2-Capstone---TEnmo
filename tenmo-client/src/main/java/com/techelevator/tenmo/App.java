@@ -158,7 +158,11 @@ public class App {
             return;
         }
         int amount = consoleService.promptForInt("Enter amount: ");
-        System.out.println(transferService.sendTeBucks(userId, amount));
+        String response = transferService.sendTeBucks(userId, amount);
+        // Print the response only if it's not null
+        if (response != null) {
+            System.out.println(response);
+        }
     }
 
     private void requestBucks() {
@@ -196,11 +200,17 @@ public class App {
         switch (option) {
             case 1:
                 TransferStatus approveStatus = new TransferStatus(2,"Approved");
-                consoleService.printMessage(transferService.approveOrRejectTransfer(transferId, approveStatus));
+                String approvedResponse = transferService.approveOrRejectTransfer(transferId, approveStatus);
+                if (approvedResponse != null){
+                    consoleService.printMessage(approvedResponse);
+                }
                 break;
             case 2:
                 TransferStatus rejectStatus = new TransferStatus(3,"Rejected");
-                consoleService.printMessage(transferService.approveOrRejectTransfer(transferId, rejectStatus));
+                String rejectResponse = transferService.approveOrRejectTransfer(transferId, rejectStatus);
+                if (rejectResponse != null){
+                    consoleService.printMessage(rejectResponse);
+                }
                 break;
             case 0:
                 consoleService.printMessage("Operation canceled.");

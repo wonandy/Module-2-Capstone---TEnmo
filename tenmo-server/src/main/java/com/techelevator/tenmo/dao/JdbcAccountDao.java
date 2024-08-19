@@ -24,6 +24,7 @@ public class JdbcAccountDao implements AccountDao{
 
     @Override
     public Account getAccountByUsername(String username) {
+        if (username == null) throw new IllegalArgumentException("Username cannot be null");
         Account account = null;
         String sql = "SELECT account_id, user_id, balance FROM account " +
                 "JOIN tenmo_user tu USING(user_id) " +

@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
@@ -63,7 +64,7 @@ public class TransferController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendTeBucks(Principal principal, @RequestBody TransferRequestDto transferRequestDto) {
+    public ResponseEntity<String> sendTeBucks(Principal principal, @Valid @RequestBody TransferRequestDto transferRequestDto) {
         String username = principal.getName();
         log.info("{} is attempting to send TeBucks to user ID: {}", username, transferRequestDto.getUserTo());
 
@@ -96,7 +97,7 @@ public class TransferController {
 
 
     @PutMapping("/{transferId}/update_transfer")
-    public ResponseEntity<String> updateTransferRequest(@PathVariable int transferId, @RequestBody TransferStatus status) {
+    public ResponseEntity<String> updateTransferRequest(@PathVariable int transferId, @Valid @RequestBody TransferStatus status) {
         try {
             Transfer transfer = transferDao.getTransferById(transferId);
             if (transfer == null) {
@@ -104,7 +105,7 @@ public class TransferController {
             }
 
             if (transfer.getTransferStatusId() != 1) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Transfer can not be altered after it has been approved or rejected");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Transfer cannot be altered after it has been approved or rejected.");
             }
 
             int statusId = transferDao.getTransferStatusIdByDesc(status.getTransferStatusDesc());
@@ -112,23 +113,43 @@ public class TransferController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status description.");
             }
 
-            transfer.setTransferStatusId(statusId);
-            transferDao.updateTransfer(transfer);
-
             if (statusId == 2) { // Approved
                 Account accountFrom = accountDao.getAccountById(transfer.getAccountFromId());
                 Account accountTo = accountDao.getAccountById(transfer.getAccountToId());
 
-                return processTransfer(accountFrom, accountTo, transfer.getAmount(), false);
-            } else {
+                ResponseEntity<String> transferResult = processTransfer(accountFrom, accountTo, transfer.getAmount(), false);
+
+                // Check and log the transfer result
+                if (transferResult == null) {
+                    log.error("Process transfer returned null for transfer ID {}", transferId);
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unknown error occurred during transfer processing.");
+                }
+
+                if (transferResult.getStatusCode() == HttpStatus.OK) {
+                    transfer.setTransferStatusId(statusId);
+                    transferDao.updateTransfer(transfer);
+                    return ResponseEntity.ok("Transfer successfully approved and completed.");
+                } else {
+                    return transferResult; // Return error response if the transfer failed
+                }
+            } else if (statusId == 3) { // Rejected
+                transfer.setTransferStatusId(statusId);
+                transferDao.updateTransfer(transfer);
                 return ResponseEntity.ok("Transfer was successfully rejected.");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unsupported status update.");
             }
+        } catch (BalanceInsufficientException e) {
+            log.error("Insufficient balance for transfer ID {}: {}", transferId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient balance: " + e.getMessage());
         } catch (DaoException e) {
             log.error("DAO Exception for transfer ID {}: {}", transferId, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error.");
+        } catch (Exception e) {
+            log.error("Unexpected error for transfer ID {}: {}", transferId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
-
     private void createTransferRecord(Account accountFrom, Account accountTo, BigDecimal amount, int statusId, int typeId) {
         Transfer transfer = new Transfer(typeId, statusId, accountFrom.getAccountId(), accountTo.getAccountId(), amount);
         transferDao.createTransfer(transfer);
@@ -136,34 +157,40 @@ public class TransferController {
 
     private ResponseEntity<String> processTransfer(Account accountFrom, Account accountTo, BigDecimal amount, boolean isImmediate) {
         try {
-            // Perform the transfer based on whether it's immediate or approved
-            if (isImmediate) {
-                accountFrom.withdraw(amount);
-                accountTo.deposit(amount);
-            } else {
-                accountTo.withdraw(amount);
-                accountFrom.deposit(amount);
+            // Validate input parameters
+            if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Amount must be greater than zero.");
             }
+
+            // Perform the transfer
+                if (isImmediate) {
+                    accountFrom.withdraw(amount);
+                    accountTo.deposit(amount);
+                } else {
+                    accountTo.withdraw(amount);
+                    accountFrom.deposit(amount);
+                }
+
 
             // Update accounts in the database
             accountDao.updateAccount(accountFrom);
             accountDao.updateAccount(accountTo);
 
-            // If it's an immediate transfer, return a success response
-            if (isImmediate) {
-                return ResponseEntity.ok("Transfer successful.");
-            } else {
-                // For approved transfers, return success message for transfer type approval
-                return ResponseEntity.ok("Transfer request approved and processed.");
-            }
-        } catch (BalanceInsufficientException | IllegalArgumentException e) {
-            log.error("Error processing transfer: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            // Return success message
+            return ResponseEntity.ok(isImmediate ? "Transfer successful." : "Transfer request approved and processed.");
+        } catch (BalanceInsufficientException e) {
+            log.error("Insufficient balance during transfer: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient balance: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid argument during transfer: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid argument: " + e.getMessage());
         } catch (DaoException e) {
-            log.error("DAO Exception while updating accounts: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error.");
+            log.error("DAO exception during transfer: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error during transfer: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
-
 
 }

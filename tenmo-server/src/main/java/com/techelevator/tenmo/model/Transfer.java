@@ -1,17 +1,23 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class Transfer {
-    private int transferId;
-    @NotBlank(message = "The field `transferTypeId` should not be blank.")
-    private int transferTypeId;
+    private Integer transferId;
+    @NotNull(message = "The field `transferTypeId` should not be null.")
+    private Integer transferTypeId;
 
-    @NotBlank(message = "The field `transferStatusId` should not be blank.")
-    private int transferStatusId;
-    private int accountFromId;
-    private int accountToId;
+    @NotNull(message = "The field `transferStatusId` should not be null.")
+    private Integer transferStatusId;
+
+    @NotNull(message = "The field `transferStatusId` should not be nullk.")
+    private Integer accountFromId;
+    @NotNull(message = "The field `accountToId` should not be null.")
+    private Integer accountToId;
+    @DecimalMin(value = "1.0", message = "The field `amount` should be greater than 0.")
     private BigDecimal amount;
 
     public Transfer() {

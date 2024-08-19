@@ -1,9 +1,14 @@
 package com.techelevator.tenmo.dto;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class TransferRequestDto {
-    private int userTo;
+    @NotNull(message = "The field `userTo` should not be null.")
+    private Integer userTo;
+
+    @DecimalMin(value = "1.0", message = "The field `amount` should be greater than 0.")
     private BigDecimal amount;
 
     // Getters and setters
