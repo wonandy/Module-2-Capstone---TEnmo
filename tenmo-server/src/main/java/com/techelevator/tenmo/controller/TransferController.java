@@ -29,8 +29,11 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class TransferController {
     private static final Logger log = LoggerFactory.getLogger(TransferController.class);
+    @Autowired
     private TransferDao transferDao;
+    @Autowired
     private UserDao userDao;
+    @Autowired
     private AccountDao accountDao;
 
     @Autowired
