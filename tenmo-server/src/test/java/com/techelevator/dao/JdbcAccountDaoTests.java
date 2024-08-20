@@ -36,6 +36,12 @@ public class JdbcAccountDaoTests extends  BaseDaoTests{
     }
 
     @Test
+    public void getAccountById_returns_correct_account(){
+        Account actualAccount = sut.getAccountById(ACCOUNT_3.getAccountId());
+
+        Assert.assertEquals(ACCOUNT_3.getAccountId(), actualAccount.getAccountId());
+    }
+    @Test
     public void updateAccount_returns_updated_values(){
         Account account = sut.getAccountById(ACCOUNT_2.getAccountId());
         account.setBalance(new BigDecimal("900.00"));
