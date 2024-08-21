@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 
 public class Transfer {
     private Integer transferId;
-    @NotNull(message = "The field `transferTypeId` should not be null.")
     private Integer transferTypeId;
 
     @NotNull(message = "The field `transferStatusId` should not be null.")
