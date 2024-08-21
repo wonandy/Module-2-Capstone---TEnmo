@@ -7,7 +7,6 @@ import com.techelevator.util.BasicLogger;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
-import static com.techelevator.util.BasicLogger.log;
 
 public class App {
 
@@ -199,18 +198,16 @@ public class App {
         int option = consoleService.promptForInt("Please choose an option: 1 to approve, 2 to reject (0 to cancel):");
         switch (option) {
             case 1:
-                TransferStatus approveStatus = new TransferStatus(2,"Approved");
+                TransferStatus approveStatus = new TransferStatus(2, "Approved");
                 String approvedResponse = transferService.approveOrRejectTransfer(transferId, approveStatus);
-                if (approvedResponse != null){
-                    consoleService.printMessage(approvedResponse);
-                }
+                consoleService.printMessage(approvedResponse);
+
                 break;
             case 2:
-                TransferStatus rejectStatus = new TransferStatus(3,"Rejected");
+                TransferStatus rejectStatus = new TransferStatus(3, "Rejected");
                 String rejectResponse = transferService.approveOrRejectTransfer(transferId, rejectStatus);
-                if (rejectResponse != null){
-                    consoleService.printMessage(rejectResponse);
-                }
+                consoleService.printMessage(rejectResponse);
+
                 break;
             case 0:
                 consoleService.printMessage("Operation canceled.");

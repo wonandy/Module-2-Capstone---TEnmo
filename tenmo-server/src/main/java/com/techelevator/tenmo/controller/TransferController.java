@@ -47,6 +47,7 @@ public class TransferController {
     public List<TransferDto> getTransfers(Principal principal) {
         String username = principal.getName();
         log.info("{} getting list of transfers they are either the receiver or sender to", username);
+
         User user = userDao.getUserByUsername(username);
         return transferDao.getTransfersByUserId(user.getId());
     }
@@ -183,7 +184,7 @@ public class TransferController {
             return ResponseEntity.ok(isImmediate ? "Transfer successful." : "Transfer request approved and processed.");
         } catch (BalanceInsufficientException e) {
             log.error("Insufficient balance during transfer: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient balance: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient funds for the transfer.");
         } catch (IllegalArgumentException e) {
             log.error("Invalid argument during transfer: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid argument: " + e.getMessage());

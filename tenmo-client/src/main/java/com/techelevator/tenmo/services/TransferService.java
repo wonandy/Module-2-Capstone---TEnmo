@@ -1,12 +1,16 @@
 package com.techelevator.tenmo.services;
 
+
 import com.techelevator.tenmo.model.*;
+
+import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+
 
 public class TransferService {
 
@@ -102,54 +106,38 @@ public class TransferService {
         return transfer;
     }
 
-    public String approveOrRejectTransfer(int transferId, TransferStatus transferStatus){
+    public String approveOrRejectTransfer(int transferId, TransferStatus transferStatus) {
         String responseMessage = null;
         try {
             ResponseEntity<String> response =
                     restTemplate.exchange(API_BASE_URL + "/" + transferId + "/update_transfer", HttpMethod.PUT, makeTransferStatus(transferStatus), String.class);
+
             if (response.getStatusCode().is2xxSuccessful()) {
                 responseMessage = response.getBody();
-
-            } else {
-                System.out.println("Error: " + response.getStatusCode() + " - " + response.getBody());
+            } else if (response.getStatusCode().is4xxClientError()) {
+                responseMessage = response.getBody();
             }
-        } catch (RestClientResponseException | ResourceAccessException e) {
-            System.out.println("Exception: " + e.getMessage());
+        } catch (RestClientResponseException e) {
+            BasicLogger.log(e.getMessage());
+            responseMessage = handleClientError(e);
+        } catch (ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+            responseMessage = "Network error occurred. Please try again later.";
         }
         return responseMessage;
     }
-//    public String approveTransfer(int trasferId){
-//        String responseMessage = null;
-//        try {
-//            ResponseEntity<String> response =
-//                    restTemplate.exchange(API_BASE_URL + "/" + trasferId + "/approve", HttpMethod.PUT, makeAuthEntity(), String.class);
-//            if (response.getStatusCode().is2xxSuccessful()) {
-//                responseMessage = response.getBody();
-//
-//            } else {
-//                System.out.println("Error: " + response.getStatusCode() + " - " + response.getBody());
-//            }
-//        } catch (RestClientResponseException | ResourceAccessException e) {
-//            System.out.println("Exception: " + e.getMessage());
-//        }
-//        return responseMessage;
-//    }
-//    public String rejectTransfer(int trasferId){
-//        String responseMessage = null;
-//        try {
-//            ResponseEntity<String> response =
-//                    restTemplate.exchange(API_BASE_URL + "/" + trasferId + "/reject", HttpMethod.PUT, makeAuthEntity(), String.class);
-//            if (response.getStatusCode().is2xxSuccessful()) {
-//                responseMessage = response.getBody();
-//            } else {
-//                System.out.println("Error: " + response.getStatusCode() + " - " + response.getBody());
-//            }
-//        } catch (RestClientResponseException | ResourceAccessException e) {
-//            System.out.println("Exception: " + e.getMessage());
-//        }
-//        return responseMessage;
-//    }
 
+    private String handleClientError(RestClientResponseException e) {
+        if (e.getRawStatusCode() == HttpStatus.BAD_REQUEST.value()) {
+            String responseBody = e.getResponseBodyAsString();
+            if (responseBody.contains("Insufficient funds")) {
+                return "Insufficient funds for the transfer.";
+            } else {
+                return "There was an error with your request. Please check your input.";
+            }
+        }
+        return "An unexpected error occurred. Please try again later.";
+    }
     private HttpEntity<TransferRequestDto> makeTransferRequestEntity(TransferRequestDto transferRequestDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
