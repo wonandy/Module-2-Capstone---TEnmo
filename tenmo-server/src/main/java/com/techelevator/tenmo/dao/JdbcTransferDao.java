@@ -107,7 +107,8 @@ public class JdbcTransferDao implements TransferDao{
                 "JOIN tenmo_user afu ON af.user_id = afu.user_id " +
                 "JOIN account at ON transfer.account_to = at.account_id " +
                 "JOIN tenmo_user atu ON at.user_id = atu.user_id " +
-                "WHERE af.user_id = ? OR atu.user_id = ?;";
+                "WHERE af.user_id = ? OR atu.user_id = ? " +
+                "ORDER BY transfer_id ASC;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId);
             while (results.next()) {
@@ -151,7 +152,8 @@ public class JdbcTransferDao implements TransferDao{
                 "JOIN transfer_status AS ts " +
                 "    ON t.transfer_status_id = ts.transfer_status_id " +
                 "WHERE ts.transfer_status_desc = 'Pending' " +
-                "AND account_to = ?;";
+                "AND account_to = ? " +
+                "ORDER BY transfer_id ASC;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
             while (results.next()) {
