@@ -33,8 +33,8 @@ public class TransferDetailsDto {
         return transferId;
     }
 
-    public void setTransferId(int tranferId) {
-        this.transferId = tranferId;
+    public void setTransferId(int transferId) {
+        this.transferId = transferId;
     }
 
     public String getTransferType() {

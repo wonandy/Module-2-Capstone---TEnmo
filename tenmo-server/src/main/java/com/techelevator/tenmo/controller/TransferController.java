@@ -46,7 +46,7 @@ public class TransferController {
     @GetMapping
     public List<TransferDto> getTransfers(Principal principal) {
         String username = principal.getName();
-        log.info("{} getting list of transfers they are either the receiver or sender to", username);
+        log.info("{} getting list of transfers that are either the receiver or sender to", username);
 
         User user = userDao.getUserByUsername(username);
         return transferDao.getTransfersByUserId(user.getId());
@@ -62,6 +62,7 @@ public class TransferController {
     @GetMapping("/pending")
     public ResponseEntity<List<TransferPendingDto>> getPending(Principal principal) {
         String username = principal.getName();
+        log.info("Getting pending transfers for user: {}", principal.getName());
         Account account = accountDao.getAccountByUsername(username);
         List<TransferPendingDto> pendingTransfers = transferDao.getPendingTransfers(account.getAccountId());
         return ResponseEntity.ok(pendingTransfers);
@@ -86,7 +87,7 @@ public class TransferController {
     }
 
     @PostMapping("/request")
-    public ResponseEntity<String> postTransferRequest(Principal principal, @RequestBody TransferRequestDto transferRequestDto) {
+    public ResponseEntity<String> postTransferRequest(Principal principal,@Valid @RequestBody TransferRequestDto transferRequestDto) {
         String username = principal.getName();
         log.info("{} is requesting TeBucks from user ID: {}", username, transferRequestDto.getUserTo());
 
@@ -141,15 +142,10 @@ public class TransferController {
                 transferDao.updateTransfer(transfer);
                 return ResponseEntity.ok("Transfer was successfully rejected.");
             } else {
+                log.error("Unsuported status update");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unsupported status update.");
             }
-        } catch (BalanceInsufficientException e) {
-            log.error("Insufficient balance for transfer ID {}: {}", transferId, e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient balance: " + e.getMessage());
-        } catch (DaoException e) {
-            log.error("DAO Exception for transfer ID {}: {}", transferId, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error.");
-        } catch (Exception e) {
+        }  catch (Exception e) {
             log.error("Unexpected error for transfer ID {}: {}", transferId, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }

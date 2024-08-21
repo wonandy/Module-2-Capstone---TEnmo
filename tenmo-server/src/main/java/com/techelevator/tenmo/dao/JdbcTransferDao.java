@@ -200,7 +200,7 @@ public class JdbcTransferDao implements TransferDao{
     }
     private TransferDetailsDto mapRowToTransferDetails(SqlRowSet rs) {
         TransferDetailsDto transferDetail = new TransferDetailsDto();
-        transferDetail.setTranferId(rs.getInt("transfer_id"));
+        transferDetail.setTransferId(rs.getInt("transfer_id"));
         transferDetail.setTransferType(rs.getString("transfer_type_desc"));
         transferDetail.setTransferStatus(rs.getString("transfer_status_desc"));
         transferDetail.setAccountFrom(rs.getString("account_from"));
