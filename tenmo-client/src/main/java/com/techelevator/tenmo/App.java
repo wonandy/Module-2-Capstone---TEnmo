@@ -3,6 +3,7 @@ package com.techelevator.tenmo;
 import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.*;
 import com.techelevator.util.BasicLogger;
+import com.techelevator.util.ConsoleColors;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -38,7 +39,7 @@ public class App {
         int menuSelection = -1;
         while (menuSelection != 0 && currentUser == null) {
             consoleService.printLoginMenu();
-            menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
+            menuSelection = consoleService.promptForMenuSelection(ConsoleColors.MAGENTA + "Please choose an option: " + ConsoleColors.RESET);
             switch (menuSelection) {
                 case 1:
                     handleRegister();
@@ -49,7 +50,7 @@ public class App {
                 case 0:
                     return;
                 default:
-                    System.out.println("Invalid Selection");
+                    System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Invalid Selection" + ConsoleColors.RESET);
                     consoleService.pause();
             }
         }
@@ -83,7 +84,7 @@ public class App {
         int menuSelection = -1;
         while (menuSelection != 0) {
             consoleService.printMainMenu();
-            menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
+            menuSelection = consoleService.promptForMenuSelection(ConsoleColors.MAGENTA + "Please choose an option: " + ConsoleColors.RESET);
             switch (menuSelection) {
                 case 1:
                     viewCurrentBalance();
@@ -101,11 +102,11 @@ public class App {
                     requestBucks();
                     break;
                 case 0:
-                    System.out.println("Thank you for using Tenmo. Goodbye! \uD83D\uDC4B ");
+                    System.out.println(ConsoleColors.ORANGE + "Thank you for using Tenmo. Goodbye! \uD83D\uDC4B " + ConsoleColors.RESET);
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("Invalid Selection");
+                    System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Invalid Selection" + ConsoleColors.RESET);
             }
             consoleService.pause();
         }
@@ -115,18 +116,18 @@ public class App {
         BigDecimal balance = accountService.getBalance();
         BasicLogger.log(String.format("%s checked their balance. Balance: %s",
                 currentUser.getUser().getUsername(), currency.format(balance)));
-        System.out.println("Your current account balance is: " + currency.format(balance));
+        System.out.println(ConsoleColors.GREEN + "Your current account balance is: " + currency.format(balance) + ConsoleColors.RESET);
     }
 
     private void viewTransferHistory() {
         TransferDto[] transfers = transferService.getTransfers();
         consoleService.printTransfers(transfers, currentUser.getUser().getUsername());
         int choice;
-        while ((choice = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ")) != 0) {
+        while ((choice = consoleService.promptForInt(ConsoleColors.MAGENTA + "Please enter transfer ID to view details (0 to cancel): " + ConsoleColors.RESET)) != 0) {
             if (isValidTransferId(choice, transfers)) {
                 consoleService.printTransferDetails(transferService.getTransfersById(choice));
             } else {
-                consoleService.printMessage("Invalid transfer ID. Please try again.");
+                consoleService.printMessage(ConsoleColors.RED_BOLD_BRIGHT + "Invalid transfer ID. Please try again." + ConsoleColors.RESET);
             }
         }
     }
@@ -140,11 +141,11 @@ public class App {
         }
 
         int choice;
-        while ((choice = consoleService.promptForInt("Please enter transfer ID to approve/reject (0 to cancel): ")) != 0) {
+        while ((choice = consoleService.promptForInt(ConsoleColors.MAGENTA + "Please enter transfer ID to approve/reject (0 to cancel): " + ConsoleColors.RESET)) != 0) {
             if (isValidTransferId(choice, pendingTransfers)) {
                 handleTransferApprovalOrRejection(choice);
             } else {
-                consoleService.printMessage("Invalid transfer ID. Please try again.");
+                consoleService.printMessage(ConsoleColors.RED_BOLD_BRIGHT + "Invalid transfer ID. Please try again." + ConsoleColors.RESET);
             }
         }
     }
@@ -152,27 +153,27 @@ public class App {
     private void sendBucks() {
         User[] users = userService.getUsers();
         consoleService.printUsers(users);
-        int userId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel): ");
+        int userId = consoleService.promptForInt(ConsoleColors.MAGENTA + "Enter ID of user you are sending to (0 to cancel): " + ConsoleColors.RESET);
         if (userId == 0) {
             return;
         }
-        int amount = consoleService.promptForInt("Enter amount: ");
+        int amount = consoleService.promptForInt(ConsoleColors.MAGENTA + "Enter amount: " + ConsoleColors.RESET);
         String response = transferService.sendTeBucks(userId, amount);
         // Print the response only if it's not null
         if (response != null) {
-            System.out.println(response);
+            System.out.println(ConsoleColors.GREEN + response + ConsoleColors.RESET);
         }
     }
 
     private void requestBucks() {
         User[] users = userService.getUsers();
         consoleService.printUsers(users);
-        int userId = consoleService.promptForInt("Enter ID of user you are requesting from (0 to cancel): ");
+        int userId = consoleService.promptForInt(ConsoleColors.MAGENTA + "Enter ID of user you are requesting from (0 to cancel): " + ConsoleColors.RESET);
         if (userId == 0) {
             return;
         }
-        int amount = consoleService.promptForInt("Enter amount: ");
-        System.out.println(transferService.requestTeBucks(userId, amount));
+        int amount = consoleService.promptForInt(ConsoleColors.MAGENTA + "Enter amount: " + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN + transferService.requestTeBucks(userId, amount) + ConsoleColors.RESET);
     }
 
     private boolean isValidTransferId(int transferId, TransferPendingDto[] pendingTransfers) {
@@ -195,25 +196,30 @@ public class App {
 
     private void handleTransferApprovalOrRejection(int transferId) {
         consoleService.printApproveRejectMenu();
-        int option = consoleService.promptForInt("Please choose an option: 1 to approve, 2 to reject (0 to cancel):");
+        int option = consoleService.promptForInt( ConsoleColors.MAGENTA + "Please choose an option: 1 to approve, 2 to reject (0 to cancel):" + ConsoleColors.RESET);
         switch (option) {
             case 1:
                 TransferStatus approveStatus = new TransferStatus(2, "Approved");
                 String approvedResponse = transferService.approveOrRejectTransfer(transferId, approveStatus);
-                consoleService.printMessage(approvedResponse);
+                if(approvedResponse.contains("Insufficient")){
+                    consoleService.printMessage(ConsoleColors.RED_BOLD_BRIGHT + approvedResponse + ConsoleColors.RESET);
+                } else {
+                    consoleService.printMessage(ConsoleColors.GREEN + approvedResponse + ConsoleColors.RESET);
+                }
+
 
                 break;
             case 2:
                 TransferStatus rejectStatus = new TransferStatus(3, "Rejected");
                 String rejectResponse = transferService.approveOrRejectTransfer(transferId, rejectStatus);
-                consoleService.printMessage(rejectResponse);
+                consoleService.printMessage( ConsoleColors.RED_BOLD_BRIGHT+ rejectResponse + ConsoleColors.RESET);
 
                 break;
             case 0:
-                consoleService.printMessage("Operation canceled.");
+                consoleService.printMessage(ConsoleColors.RED_BOLD_BRIGHT + "Operation canceled." + ConsoleColors.RESET);
                 break;
             default:
-                consoleService.printMessage("Invalid option. Please try again.");
+                consoleService.printMessage(ConsoleColors.RED_BOLD_BRIGHT + "Invalid option. Please try again." + ConsoleColors.RESET);
         }
     }
 }

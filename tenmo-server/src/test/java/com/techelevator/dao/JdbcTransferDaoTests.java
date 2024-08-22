@@ -85,7 +85,7 @@ public class JdbcTransferDaoTests extends BaseDaoTests{
     public void getTransferDetailsById_returns_correct_transfer_and_user_details(){
         TransferDetailsDto detailsFor3010 = sut.getTransferDetailsById(3010);
 
-        Assert.assertEquals(3010, detailsFor3010.getTranferId());
+        Assert.assertEquals(3010, detailsFor3010.getTransferId());
         Assert.assertEquals("Request", detailsFor3010.getTransferType());
         Assert.assertEquals("Pending", detailsFor3010.getTransferStatus());
         Assert.assertEquals("user1", detailsFor3010.getAccountFrom());
