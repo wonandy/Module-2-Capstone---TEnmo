@@ -25,7 +25,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/transfer/")
+@RequestMapping("/transfer")
 @PreAuthorize("isAuthenticated()")
 public class TransferController {
     private static final Logger log = LoggerFactory.getLogger(TransferController.class);
@@ -79,7 +79,10 @@ public class TransferController {
 
         ResponseEntity<String> response = processTransfer(accountFrom, accountTo, amount, true); // Immediate transfer
         if (response.getStatusCode() == HttpStatus.OK) {
-            createTransferRecord(accountFrom, accountTo, amount, 2, 2); // status id approved type send
+            //get status and type id
+            int transferStatusId = transferDao.getTransferStatusIdByDesc("Approved");
+            int transferTypeId = transferDao.getTransferTypeIdByDesc("Send");
+            createTransferRecord(accountFrom, accountTo, amount, transferStatusId, transferTypeId); // status id approved type send
             log.info("{} successfully sent ${} to user ID: {}", username, amount, transferRequestDto.getUserTo());
         }
 
@@ -93,8 +96,16 @@ public class TransferController {
 
         Account accountFrom = accountDao.getAccountByUsername(username);
         Account accountTo = accountDao.getAccountByUserId(transferRequestDto.getUserTo());
+        if (accountTo.getAccountId() == accountFrom.getAccountId()){
+            log.info("Transfer requested and failed attempted to themselves by User: {}", transferRequestDto.getUserTo());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot request money from yourself.");
+        }
 
-        createTransferRecord(accountFrom, accountTo, transferRequestDto.getAmount(), 1, 1); // status pending type request
+        //get status and type id
+        int transferStatusId = transferDao.getTransferStatusIdByDesc("Pending");
+        int transferTypeId = transferDao.getTransferTypeIdByDesc("Request");
+
+        createTransferRecord(accountFrom, accountTo, transferRequestDto.getAmount(), transferStatusId, transferTypeId); // status pending type request
         log.info("Transfer request sent to user ID: {}", transferRequestDto.getUserTo());
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Transfer request sent.");

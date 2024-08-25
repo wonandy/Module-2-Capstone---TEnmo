@@ -42,6 +42,22 @@ public class JdbcTransferDao implements TransferDao{
             throw new DaoException("Database access error occurred", e);
         }
     }
+    @Override
+    public Integer getTransferTypeIdByDesc(String status) {
+        String sql = "SELECT transfer_type_id " +
+                "FROM transfer_type " +
+                "WHERE LOWER(TRIM(transfer_type_desc)) = LOWER(TRIM(?))";
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, status);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataAccessException e) {
+
+            throw new DaoException("Database access error occurred", e);
+        }
+    }
 
     @Override
     public Transfer createTransfer(Transfer transfer) {

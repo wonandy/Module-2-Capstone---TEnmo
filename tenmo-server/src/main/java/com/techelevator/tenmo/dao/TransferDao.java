@@ -11,6 +11,8 @@ public interface TransferDao {
 
 
     Integer getTransferStatusIdByDesc(String status);
+
+    Integer getTransferTypeIdByDesc(String type);
     Transfer createTransfer(Transfer transfer);
     List<TransferDto> getTransfersByUserId(int userId);
 

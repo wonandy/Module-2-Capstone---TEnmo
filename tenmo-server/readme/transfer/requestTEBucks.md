@@ -2,7 +2,7 @@
 
 **Description** : Used to request TE Bucks from another user
 
-**URL** : `/transferDetail/request`
+**URL** : `/transfer/request`
 
 **Method** : `POST`
 
@@ -32,30 +32,29 @@
 
 **Content Example**
 
-```json
+```
+
 {
-  "account_from": 1002,
-  "amount": 399.44,
-  "transfer_status": "Pending"
+  "Transfer request sent."
 }
 ```
 
-
 ## Error Response
 
-**Condition** : Invalid amount or requester cannot be yourself
+**Condition** : If attempting to request money from yourself
 
-**Code** : `400 BAD REQUEST`
+**Code** : `400 Bad Request`
 
 **Content** :
 
 ```json
 {
-  "timestamp": "2024-08-10T00:15:05.073+00:00",
+  "timestamp": "2024-08-10T00:10:05.073+00:00",
   "status": 400,
   "error": "Bad Request",
-  "message": "Invalid amount or requester cannot be yourself.",
-  "path": "transferDetail/request/"
+  "message": "Cannot request money from yourself.",
+  "path": "transfer/{transfer_id}/"
 }
 ```
+
 

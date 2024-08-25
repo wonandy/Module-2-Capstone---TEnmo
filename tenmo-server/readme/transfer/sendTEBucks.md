@@ -4,7 +4,7 @@
 
 **Description** : Used to send TE Bucks to another user
 
-**URL** : `/transferDetail/send`
+**URL** : `/transfer/send`
 
 **Method** : `POST`
 
@@ -36,6 +36,12 @@
 
 **No Content Returned**
 
+```
+{
+Transfer successful.
+}
+```
+
 ---
 
 
@@ -52,7 +58,7 @@
   "timestamp": "2024-08-10T00:30:19.725+00:00",
   "status": 400,
   "error": "Insufficient Funds",
-  "message": "Account does not have sufficient funds to complete this transferDetail",
-  "path": "/transferDetail/send"
+  "message": "Insufficient funds for the transfer.",
+  "path": "/transfer/send"
 }
 ```

@@ -34,6 +34,11 @@ Token is provided with the request:
 
 ---
 
+
+### User Related 
+
+* [Get List of users not including current User](user/getUsersExludingCurrent) : `GET /users/exclude_current`
+
 ### Transfer related
 
 Endpoints for viewing and manipulating the Transfers that the Authenticated User has permissions to access.
@@ -43,4 +48,4 @@ Endpoints for viewing and manipulating the Transfers that the Authenticated User
 * [Get Transfer Details by ID](transfer/getTransferById.md) : `GET /transfer/{id}`
 * [Request TE Bucks](transfer/requestTEBucks.md) : `POST /transfer/request`
 * [Get List of pending Transfer Requests](transfer/getPendingTransfers.md) : `GET /transfer/pending/`
-* [Approve Transfer Requests](transfer/approveTransfer.md) : `PUT /transfer/{transfer_id}/accepted/`
+* [Approve Transfer Requests](transfer/updateTransfer.md) : `PUT /transfer/{transfer_id}/update_transfer/`

@@ -27,7 +27,7 @@ public class UserService {
         User[] users = null;
         try {
             ResponseEntity<User[]> response =
-                    restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeAuthEntity(), User[].class);
+                    restTemplate.exchange(API_BASE_URL + "exclude_current",HttpMethod.GET, makeAuthEntity(), User[].class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 users = response.getBody();
             } else {

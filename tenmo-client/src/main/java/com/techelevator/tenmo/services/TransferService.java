@@ -14,10 +14,12 @@ import java.math.BigDecimal;
 
 public class TransferService {
 
-    public static final String API_BASE_URL = "http://localhost:8080/transfer/";
+    public static final String API_BASE_URL = "http://localhost:8080/transfer";
     private RestTemplate restTemplate = new RestTemplate();
 
     private String authToken = null;
+
+    private ConsoleService consoleService;
 
     public void setAuthToken(String token) {
         this.authToken = token;
@@ -29,7 +31,7 @@ public class TransferService {
         TransferPendingDto[] pendingTransfers = null;
         try {
             ResponseEntity<TransferPendingDto[]> response =
-                    restTemplate.exchange(API_BASE_URL + "pending", HttpMethod.GET, makeAuthEntity(), TransferPendingDto[].class);
+                    restTemplate.exchange(API_BASE_URL + "/pending", HttpMethod.GET, makeAuthEntity(), TransferPendingDto[].class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 pendingTransfers = response.getBody();
             } else {
@@ -49,7 +51,8 @@ public class TransferService {
             if (response.getStatusCode().is2xxSuccessful()) {
                 transfers = response.getBody();
             } else {
-                System.out.println("Error: " + response.getStatusCode() + " - " + response.getBody());
+
+                System.out.println("Error: " + response.getBody());
             }
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println("Exception: " + e.getMessage());
@@ -65,7 +68,7 @@ public class TransferService {
             if (response.getStatusCode().is2xxSuccessful()) {
                 transfer = response.getBody();
             } else {
-                System.out.println("Error: " + response.getStatusCode() + " - " + response.getBody());
+                System.out.println("Error: " + response.getBody());
             }
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.println("Exception: " + e.getMessage());
@@ -80,21 +83,19 @@ public class TransferService {
         TransferRequestDto transferRequestDto = new TransferRequestDto();
         transferRequestDto.setUserTo(userId);
         transferRequestDto.setAmount(BigDecimal.valueOf(amount));
-        String responseMessage = null;
-        try {
-            ResponseEntity<String> response =
-                    restTemplate.exchange(API_BASE_URL + "request", HttpMethod.POST, makeTransferRequestEntity(transferRequestDto), String.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                responseMessage = response.getBody();
-            } else {
-                System.out.println("Error: " + response.getStatusCode() + " - " + response.getBody());
-            }
-        } catch (RestClientResponseException | ResourceAccessException e) {
-            System.out.println("Exception: " + e.getMessage());
-        }
-        return responseMessage;
-    }
 
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    API_BASE_URL + "/request",
+                    HttpMethod.POST,
+                    makeTransferRequestEntity(transferRequestDto),
+                    String.class
+            );
+            return response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            return e.getMessage();
+        }
+    }
     public String sendTeBucks(int userId, int amount) {
         TransferRequestDto transferRequestDto = new TransferRequestDto();
         transferRequestDto.setUserTo(userId);
@@ -102,11 +103,11 @@ public class TransferService {
         String responseMessage = null;
         try {
             ResponseEntity<String> response =
-                    restTemplate.exchange(API_BASE_URL + "send", HttpMethod.POST, makeTransferRequestEntity(transferRequestDto), String.class);
+                    restTemplate.exchange(API_BASE_URL + "/send", HttpMethod.POST, makeTransferRequestEntity(transferRequestDto), String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 responseMessage = response.getBody();
             } else {
-                System.out.println("Error: " + response.getStatusCode() + " - " + response.getBody());
+                System.out.println("Error: " + response.getBody());
             }
         } catch (RestClientResponseException e) {
             BasicLogger.log(e.getMessage());

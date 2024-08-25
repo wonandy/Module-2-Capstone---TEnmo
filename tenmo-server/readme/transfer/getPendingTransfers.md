@@ -2,7 +2,7 @@
 
 ---
 
-**Description** : Used to retrieve a list of pending transferDetail requests for user
+**Description** : Used to retrieve a list of pending transferDetail requests for current user
 
 **URL** : `/transferDetail/pending`
 
@@ -49,7 +49,7 @@
   "timestamp": "2024-08-10T00:20:05.073+00:00",
   "status": 401,
   "error": "Unauthorized",
-  "message": "Token is missing or invalid.",
-  "path": "/api/transferDetail/pending/"
+  "message": "Full authentication is required to access this resource",
+  "path": "/transfer/pending/"
 }
 ```

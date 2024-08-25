@@ -2,9 +2,9 @@
 
 ---
 
-**Description** : Used to retrieve a list of transferDetail sent and recieved by user
+**Description** : Used to retrieve a list of transferDetail sent or recieved by current user
 
-**URL** : `/transferDetail`
+**URL** : `/transfer`
 
 **Method** : `GET`
 
@@ -23,14 +23,14 @@
 [
   {
     "transferId": "2001 (integer)",
-    "fromUser": "Harrison (string)",
-    "toUser": "Anya (string)",
+    "accountFrom": "Harrison (string)",
+    "accountTo": "Anya (string)",
     "amount": "100.00 (numeric)"
   },
   {
     "transferId": "2003 (integer)",
     "fromUser": "Jeff (string)",
-    "toUser": "George (string)",
+    "toUser": "Harrison (string)",
     "amount": "333.33 (numeric)" 
   }
 ]
@@ -39,32 +39,20 @@
 ---
 
 ## Error Response
-[//]: # ()
-[//]: # (TODO Figure out error Response possibilities) 
 
-[//]: # (**Condition** : User does not have sufficient funds to complete transferDetail)
+**Condition** : If Not Authenticated.
 
-[//]: # ()
-[//]: # (**Code** : `400 BAD REQUEST`)
+**Code** : `401 Unauthorized`
 
-[//]: # ()
-[//]: # (**Content** :)
+**Content** :
 
-[//]: # ()
-[//]: # (```json)
+```json
+{
+  "timestamp": "2024-08-10T00:30:19.725+00:00",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Full authentication is required to access this resource",
+  "path": "/account/balance"
+}
+```
 
-[//]: # ({)
-
-[//]: # (  "timestamp": "2024-08-10T00:30:19.725+00:00",)
-
-[//]: # (  "status": 400,)
-
-[//]: # (  "error": "Insufficient Funds",)
-
-[//]: # (  "message": "Account does not have sufficient funds to complete this transferDetail",)
-
-[//]: # (  "path": "/transferDetail/send")
-
-[//]: # (})
-
-[//]: # (```)

@@ -14,7 +14,7 @@ public class ConsoleService {
     private final NumberFormat currency = NumberFormat.getCurrencyInstance();
 
     public int promptForMenuSelection(String prompt) {
-        System.out.print(prompt);
+        System.out.print(ConsoleColors.DARK_BLUE + prompt + ConsoleColors.RESET);
         String input = scanner.nextLine();
         return parseInt(input, -1);
     }
@@ -28,10 +28,10 @@ public class ConsoleService {
     public void printUsers(User[] users) {
         printSeparator(22);
         System.out.println(ConsoleColors.ORANGE + "Users");
-        System.out.printf(" %-10s%10s %n", "ID", "Username" + ConsoleColors.RESET);
+        System.out.printf("%-10s%10s %n", "ID", "Username" + ConsoleColors.RESET);
         printSeparator(22);
         for (User user : users) {
-            System.out.printf(ConsoleColors.BLUE + " %-10d%10s %n", user.getId(), user.getUsername() + ConsoleColors.RESET);
+            System.out.printf(ConsoleColors.DARK_BLUE + "%-10d%10s %n", user.getId(), user.getUsername() + ConsoleColors.RESET);
         }
         printSeparator(10);
     }
@@ -49,9 +49,9 @@ public class ConsoleService {
             int transferId = transfer.getTransferId();
 
             if (currentUsername.equals(fromUsername)) {
-                System.out.printf(ConsoleColors.BLUE + " %-10d%15s%15s %n", transferId, "To: " + toUsername, currency.format(amount) + ConsoleColors.RESET);
+                System.out.printf(ConsoleColors.DARK_BLUE + " %-10d%15s%15s %n", transferId, "To: " + toUsername, currency.format(amount) + ConsoleColors.RESET);
             } else if (currentUsername.equals(toUsername)) {
-                System.out.printf(ConsoleColors.BLUE + " %-10d%15s%15s %n", transferId, "From: " + fromUsername, currency.format(amount) + ConsoleColors.RESET);
+                System.out.printf(ConsoleColors.DARK_BLUE + " %-10d%15s%15s %n", transferId, "From: " + fromUsername, currency.format(amount) + ConsoleColors.RESET);
             }
         }
 
@@ -62,7 +62,7 @@ public class ConsoleService {
         printSeparator(37);
         System.out.println(ConsoleColors.ORANGE + "Transfer Details" + ConsoleColors.RESET);
         printSeparator(37);
-        System.out.printf(ConsoleColors.BLUE + "Id: %d%n", transferDetailsDto.getTransferId());
+        System.out.printf(ConsoleColors.DARK_BLUE + "Id: %d%n", transferDetailsDto.getTransferId());
         System.out.printf("From: %s%n", transferDetailsDto.getAccountFrom());
         System.out.printf("To: %s%n", transferDetailsDto.getAccountTo());
         System.out.printf("Type: %s%n", transferDetailsDto.getTransferType());
@@ -83,7 +83,7 @@ public class ConsoleService {
         printSeparator(37);
 
         for (TransferPendingDto transfer : pendingTransfers) {
-            System.out.printf(ConsoleColors.GREEN +"  %-10d%10s%15s %n",
+            System.out.printf(ConsoleColors.DARK_BLUE +"  %-10d%10s%15s %n",
                     transfer.getTransferId(),
                     transfer.getAccountFrom(),
                     currency.format(transfer.getAmount()) + ConsoleColors.RESET);
@@ -92,7 +92,7 @@ public class ConsoleService {
     }
 
     public void printApproveRejectMenu() {
-        System.out.println(ConsoleColors.YELLOW);
+        System.out.println(ConsoleColors.ORANGE);
         System.out.println("1: Approve");
         System.out.println("2: Reject");
         System.out.println("0: Exit");
@@ -100,7 +100,7 @@ public class ConsoleService {
     }
 
     public void printLoginMenu() {
-        System.out.println(ConsoleColors.YELLOW);
+        System.out.println(ConsoleColors.ORANGE);
         System.out.println("1: Register");
         System.out.println("2: Login");
         System.out.println("0: Exit");
@@ -108,7 +108,7 @@ public class ConsoleService {
     }
 
     public void printMainMenu() {
-        System.out.println(ConsoleColors.YELLOW);
+        System.out.println(ConsoleColors.ORANGE);
         System.out.println("1: View your current balance");
         System.out.println("2: View your past transfers");
         System.out.println("3: View your pending requests");
@@ -119,7 +119,7 @@ public class ConsoleService {
     }
 
     public UserCredentials promptForCredentials() {
-        String username = promptForString(ConsoleColors.LIGHT_MAGENTA + "Username: ");
+        String username = promptForString(ConsoleColors.DARK_BLUE + "Username: ");
         String password = promptForString("Password: " + ConsoleColors.RESET);
         return new UserCredentials(username, password);
     }
@@ -130,7 +130,7 @@ public class ConsoleService {
     }
 
     public int promptForInt(String prompt) {
-        System.out.print(prompt);
+        System.out.print(ConsoleColors.DARK_BLUE + prompt + ConsoleColors.RESET);
         while (true) {
             try {
                 return Integer.parseInt(scanner.nextLine());
@@ -141,7 +141,7 @@ public class ConsoleService {
     }
 
     public BigDecimal promptForBigDecimal(String prompt) {
-        System.out.print(prompt);
+        System.out.print(ConsoleColors.DARK_BLUE + prompt + ConsoleColors.RESET);
         while (true) {
             try {
                 return new BigDecimal(scanner.nextLine());
@@ -152,7 +152,7 @@ public class ConsoleService {
     }
 
     public void pause() {
-        System.out.println(ConsoleColors.MAGENTA + "\nPress Enter to continue..." + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.DARK_BLUE + "\nPress Enter to continue..." + ConsoleColors.RESET);
         scanner.nextLine();
     }
 
@@ -160,8 +160,8 @@ public class ConsoleService {
         System.out.println(message);
     }
 
-    public void printErrorMessage() {
-        System.out.println("An error occurred. Check the log for details.");
+    public void printErrorMessage(String errorMessage) {
+        System.out.println(ConsoleColors.RED_BOLD_BRIGHT + errorMessage + ConsoleColors.RESET);
     }
 
     private void printSeparator(int length) {

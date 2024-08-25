@@ -27,7 +27,7 @@ public class UserController {
         this.userDao = userDao;
     }
 
-    @GetMapping
+    @GetMapping("exclude_current")
     public List<User> getUsersNiCurrentUser(Principal principal){
         log.info(principal.getName() + " Accessing a list of other tenmo users");
         return userDao.getUsersNiCurrentUser(principal.getName());
