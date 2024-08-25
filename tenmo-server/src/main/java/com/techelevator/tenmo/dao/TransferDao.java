@@ -13,12 +13,15 @@ public interface TransferDao {
     Integer getTransferStatusIdByDesc(String status);
 
     Integer getTransferTypeIdByDesc(String type);
+
     Transfer createTransfer(Transfer transfer);
+
     List<TransferDto> getTransfersByUserId(int userId);
 
     TransferDetailsDto getTransferDetailsById(int transferId);
 
     List<TransferPendingDto> getPendingTransfers(int userId);
+
     Transfer getTransferById(int transferId);
 
     Transfer updateTransfer(Transfer updatedTransfer);

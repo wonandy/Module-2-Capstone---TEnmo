@@ -1,11 +1,17 @@
 package com.techelevator.tenmo.dto;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class TransferDto {
     private int transferId;
+    @NotNull(message = "The field `accountFrom` should not be null.")
     private String accountFrom;
+    @NotNull(message = "The field `accountTo` should not be null.")
     private String accountTo;
+    @DecimalMin(value = "1.0", message = "The field `amount` should be greater than 0.")
+    @NotNull(message = "The field `amount` should not be null.")
     private BigDecimal amount;
 
     public TransferDto(){

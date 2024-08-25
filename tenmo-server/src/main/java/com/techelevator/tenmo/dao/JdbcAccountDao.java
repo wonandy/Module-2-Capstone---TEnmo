@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
-public class JdbcAccountDao implements AccountDao{
+public class JdbcAccountDao implements AccountDao {
 
 
     private final JdbcTemplate jdbcTemplate;
@@ -31,10 +31,10 @@ public class JdbcAccountDao implements AccountDao{
                 "WHERE tu.username = ?";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
-            if(results.next()){
+            if (results.next()) {
                 account = mapRowToAccount(results);
             }
-        } catch (CannotGetJdbcConnectionException e){
+        } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         }
         return account;
@@ -47,10 +47,10 @@ public class JdbcAccountDao implements AccountDao{
                 "WHERE user_id = ?";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-            if(results.next()){
+            if (results.next()) {
                 account = mapRowToAccount(results);
             }
-        } catch (CannotGetJdbcConnectionException e){
+        } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         }
         return account;
@@ -80,15 +80,16 @@ public class JdbcAccountDao implements AccountDao{
         String sql = "SELECT account_id, user_id, balance FROM account WHERE account_id = ?";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
-            if(results.next()){
+            if (results.next()) {
                 account = mapRowToAccount(results);
             }
-        } catch (CannotGetJdbcConnectionException e){
+        } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         }
         return account;
     }
-    private Account mapRowToAccount(SqlRowSet results){
+
+    private Account mapRowToAccount(SqlRowSet results) {
         Account account = new Account();
         account.setAccountId(results.getInt("account_id"));
         account.setUserId(results.getInt("user_id"));

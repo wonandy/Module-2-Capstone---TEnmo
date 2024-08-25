@@ -23,6 +23,7 @@ public class AccountService {
     public void setAuthToken(String token) {
         this.authToken = token;
     }
+
     public BigDecimal getBalance() {
         BigDecimal balance = null;
         try {
@@ -38,6 +39,7 @@ public class AccountService {
         }
         return balance;
     }
+
     public User[] getUsers() {
         User[] users = null;
         try {
@@ -53,7 +55,6 @@ public class AccountService {
         }
         return users;
     }
-
 
 
     private HttpEntity<Void> makeAuthEntity() {

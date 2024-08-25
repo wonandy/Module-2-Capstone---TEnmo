@@ -54,6 +54,7 @@ public class JdbcUserDao implements UserDao {
         }
         return users;
     }
+
     public List<User> getUsersNiCurrentUser(String username) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT user_id, username, password_hash FROM tenmo_user " +

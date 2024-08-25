@@ -24,22 +24,22 @@ public class AccountController {
     private UserDao userDao;
 
     @Autowired
-    public AccountController(AccountDao accountDao){
+    public AccountController(AccountDao accountDao) {
         this.accountDao = accountDao;
     }
 
 
     @GetMapping("balance")
-    public BigDecimal getBalance(Principal principal){
+    public BigDecimal getBalance(Principal principal) {
         BigDecimal balance = null;
         log.info("{} Accessing their account balance", principal.getName());
-        try{
-             balance = accountDao.getAccountByUsername(principal.getName()).getBalance();
+        try {
+            balance = accountDao.getAccountByUsername(principal.getName()).getBalance();
             return balance;
-        } catch (DaoException e){
+        } catch (DaoException e) {
             log.error("Unable to retrieve balance for {} ", principal.getName());
         }
-       return balance;
+        return balance;
     }
 
 

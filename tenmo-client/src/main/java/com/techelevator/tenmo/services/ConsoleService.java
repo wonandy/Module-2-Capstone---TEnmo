@@ -20,7 +20,7 @@ public class ConsoleService {
     }
 
     public void printGreeting() {
-        System.out.println(ConsoleColors.ORANGE +"*********************");
+        System.out.println(ConsoleColors.ORANGE + "*********************");
         System.out.println("* Welcome to TEnmo! *");
         System.out.println("*********************" + ConsoleColors.RESET);
     }
@@ -83,7 +83,7 @@ public class ConsoleService {
         printSeparator(37);
 
         for (TransferPendingDto transfer : pendingTransfers) {
-            System.out.printf(ConsoleColors.DARK_BLUE +"  %-10d%10s%15s %n",
+            System.out.printf(ConsoleColors.DARK_BLUE + "  %-10d%10s%15s %n",
                     transfer.getTransferId(),
                     transfer.getAccountFrom(),
                     currency.format(transfer.getAmount()) + ConsoleColors.RESET);

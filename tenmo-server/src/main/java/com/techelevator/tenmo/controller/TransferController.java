@@ -90,13 +90,13 @@ public class TransferController {
     }
 
     @PostMapping("/request")
-    public ResponseEntity<String> postTransferRequest(Principal principal,@Valid @RequestBody TransferRequestDto transferRequestDto) {
+    public ResponseEntity<String> postTransferRequest(Principal principal, @Valid @RequestBody TransferRequestDto transferRequestDto) {
         String username = principal.getName();
         log.info("{} is requesting TeBucks from user ID: {}", username, transferRequestDto.getUserTo());
 
         Account accountFrom = accountDao.getAccountByUsername(username);
         Account accountTo = accountDao.getAccountByUserId(transferRequestDto.getUserTo());
-        if (accountTo.getAccountId() == accountFrom.getAccountId()){
+        if (accountTo.getAccountId() == accountFrom.getAccountId()) {
             log.info("Transfer requested and failed attempted to themselves by User: {}", transferRequestDto.getUserTo());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot request money from yourself.");
         }
@@ -144,7 +144,7 @@ public class TransferController {
                 if (transferResult.getStatusCode() == HttpStatus.OK) {
                     transfer.setTransferStatusId(statusId);
                     transferDao.updateTransfer(transfer);
-                    return ResponseEntity.ok("Transfer successfully approved and completed.");
+                    return ResponseEntity.ok("Transfer successfully approved and processed.");
                 } else {
                     return transferResult; // Return error response if the transfer failed
                 }
@@ -156,11 +156,12 @@ public class TransferController {
                 log.error("Unsuported status update");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unsupported status update.");
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error("Unexpected error for transfer ID {}: {}", transferId, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
+
     private void createTransferRecord(Account accountFrom, Account accountTo, BigDecimal amount, int statusId, int typeId) {
         Transfer transfer = new Transfer(typeId, statusId, accountFrom.getAccountId(), accountTo.getAccountId(), amount);
         transferDao.createTransfer(transfer);
@@ -174,13 +175,13 @@ public class TransferController {
             }
 
             // Perform the transfer
-                if (isImmediate) {
-                    accountFrom.withdraw(amount);
-                    accountTo.deposit(amount);
-                } else {
-                    accountTo.withdraw(amount);
-                    accountFrom.deposit(amount);
-                }
+            if (isImmediate) {
+                accountFrom.withdraw(amount);
+                accountTo.deposit(amount);
+            } else {
+                accountTo.withdraw(amount);
+                accountFrom.deposit(amount);
+            }
 
 
             // Update accounts in the database

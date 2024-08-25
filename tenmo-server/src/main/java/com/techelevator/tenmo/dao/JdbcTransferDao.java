@@ -18,7 +18,7 @@ import java.util.List;
 
 
 @Repository
-public class JdbcTransferDao implements TransferDao{
+public class JdbcTransferDao implements TransferDao {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -42,6 +42,7 @@ public class JdbcTransferDao implements TransferDao{
             throw new DaoException("Database access error occurred", e);
         }
     }
+
     @Override
     public Integer getTransferTypeIdByDesc(String status) {
         String sql = "SELECT transfer_type_id " +
@@ -77,7 +78,6 @@ public class JdbcTransferDao implements TransferDao{
     }
 
 
-
     @Override
     public Transfer getTransferById(int transferId) {
         Transfer transfer = null;
@@ -102,7 +102,7 @@ public class JdbcTransferDao implements TransferDao{
         String sql = "UPDATE transfer SET transfer_type_id = ?, transfer_status_id = ?, account_from = ?, account_to = ?, amount = ? " +
                 "WHERE transfer_id = ?";
         try {
-            int rowsAffected = jdbcTemplate.update(sql, updatedTransfer.getTransferTypeId(), updatedTransfer.getTransferStatusId(),updatedTransfer.getAccountFromId(), updatedTransfer.getAccountToId(), updatedTransfer.getAmount(), updatedTransfer.getTransferId() );
+            int rowsAffected = jdbcTemplate.update(sql, updatedTransfer.getTransferTypeId(), updatedTransfer.getTransferStatusId(), updatedTransfer.getAccountFromId(), updatedTransfer.getAccountToId(), updatedTransfer.getAmount(), updatedTransfer.getTransferId());
             if (rowsAffected > 0) {
 
                 return getTransferById(updatedTransfer.getTransferId());
@@ -136,6 +136,7 @@ public class JdbcTransferDao implements TransferDao{
         }
         return transfers;
     }
+
     @Override
     public TransferDetailsDto getTransferDetailsById(int transferId) {
         TransferDetailsDto transferDetail = null;
@@ -158,6 +159,7 @@ public class JdbcTransferDao implements TransferDao{
         }
         return transferDetail;
     }
+
     @Override
     public List<TransferPendingDto> getPendingTransfers(int accountId) {
         List<TransferPendingDto> pendingRequests = new ArrayList<>();
@@ -182,7 +184,7 @@ public class JdbcTransferDao implements TransferDao{
         return pendingRequests;
     }
 
-    private Transfer mapRowToTransfer(SqlRowSet rs){
+    private Transfer mapRowToTransfer(SqlRowSet rs) {
         Transfer transfer = new Transfer();
         transfer.setTransferId(rs.getInt("transfer_id"));
         transfer.setTransferTypeId(rs.getInt("transfer_type_id"));
@@ -214,6 +216,7 @@ public class JdbcTransferDao implements TransferDao{
 
         return transfer;
     }
+
     private TransferDetailsDto mapRowToTransferDetails(SqlRowSet rs) {
         TransferDetailsDto transferDetail = new TransferDetailsDto();
         transferDetail.setTransferId(rs.getInt("transfer_id"));

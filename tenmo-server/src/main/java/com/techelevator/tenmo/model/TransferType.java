@@ -1,7 +1,10 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.NotNull;
+
 public class TransferType {
     private int transferTypeId;
+    @NotNull(message = "The field `transferTypeDesc` should not be null.")
     private String transferTypeDesc;
 
     public TransferType(int transferTypeId, String transferTypeDesc) {

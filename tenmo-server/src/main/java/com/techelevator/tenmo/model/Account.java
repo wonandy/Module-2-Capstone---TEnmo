@@ -45,7 +45,7 @@ public class Account {
         this.balance = balance;
     }
 
-    public void withdraw(BigDecimal amount){
+    public void withdraw(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Withdrawal amount must be positive");
         }
@@ -54,7 +54,8 @@ public class Account {
         }
         balance = balance.subtract(amount);
     }
-    public void deposit(BigDecimal amount){
+
+    public void deposit(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Deposit amount must be positive");
         }

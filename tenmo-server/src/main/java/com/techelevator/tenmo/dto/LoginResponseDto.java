@@ -9,7 +9,6 @@ import com.techelevator.tenmo.model.User;
     to the client from a login endpoint.
  */
 public class LoginResponseDto {
-
     private String token;
     private User user;
 

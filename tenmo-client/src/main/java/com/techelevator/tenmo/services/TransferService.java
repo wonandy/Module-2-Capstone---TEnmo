@@ -10,6 +10,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 
 public class TransferService {
@@ -19,7 +20,7 @@ public class TransferService {
 
     private String authToken = null;
 
-    private ConsoleService consoleService;
+    private NumberFormat currency = NumberFormat.getCurrencyInstance();
 
     public void setAuthToken(String token) {
         this.authToken = token;
@@ -91,11 +92,17 @@ public class TransferService {
                     makeTransferRequestEntity(transferRequestDto),
                     String.class
             );
-            return response.getBody();
+            if (response.getStatusCode().is2xxSuccessful()) {
+                String res = "Request of " + currency.format(transferRequestDto.getAmount()) + " sent to " + transferRequestDto.getUserTo();
+                return res;
+            } else {
+                return response.getBody();
+            }
         } catch (RestClientResponseException | ResourceAccessException e) {
             return e.getMessage();
         }
     }
+
     public String sendTeBucks(int userId, int amount) {
         TransferRequestDto transferRequestDto = new TransferRequestDto();
         transferRequestDto.setUserTo(userId);
@@ -105,7 +112,8 @@ public class TransferService {
             ResponseEntity<String> response =
                     restTemplate.exchange(API_BASE_URL + "/send", HttpMethod.POST, makeTransferRequestEntity(transferRequestDto), String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
-                responseMessage = response.getBody();
+                String res = currency.format(transferRequestDto.getAmount()) + " sent to: " + transferRequestDto.getUserTo();
+                responseMessage = res;
             } else {
                 System.out.println("Error: " + response.getBody());
             }
@@ -126,7 +134,7 @@ public class TransferService {
                     restTemplate.exchange(API_BASE_URL + "/" + transferId + "/update_transfer", HttpMethod.PUT, makeTransferStatus(transferStatus), String.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
-                responseMessage = response.getBody();
+                responseMessage = transferId + " " + response.getBody();
             } else if (response.getStatusCode().is4xxClientError()) {
                 responseMessage = response.getBody();
             }
