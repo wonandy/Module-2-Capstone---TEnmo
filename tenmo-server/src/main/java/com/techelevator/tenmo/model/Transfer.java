@@ -13,7 +13,7 @@ public class Transfer {
     @NotNull(message = "The field `transferStatusId` should not be null.")
     private Integer transferStatusId;
 
-    @NotNull(message = "The field `transferStatusId` should not be nullk.")
+    @NotNull(message = "The field `accountFromId` should not be null.")
     private Integer accountFromId;
     @NotNull(message = "The field `accountToId` should not be null.")
     private Integer accountToId;
