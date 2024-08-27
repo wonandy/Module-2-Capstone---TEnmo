@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.exception.DaoException;
-import com.techelevator.tenmo.model.RegisterUserDto;
+import com.techelevator.tenmo.dto.RegisterUserDto;
 import com.techelevator.tenmo.model.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -45,6 +45,22 @@ public class JdbcUserDao implements UserDao {
         String sql = "SELECT user_id, username, password_hash FROM tenmo_user";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+            while (results.next()) {
+                User user = mapRowToUser(results);
+                users.add(user);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+        return users;
+    }
+
+    public List<User> getUsersNiCurrentUser(String username) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT user_id, username, password_hash FROM tenmo_user " +
+                "WHERE username != ?";
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
             while (results.next()) {
                 User user = mapRowToUser(results);
                 users.add(user);

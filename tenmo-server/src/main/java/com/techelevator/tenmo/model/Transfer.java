@@ -1,11 +1,13 @@
 package com.techelevator.tenmo.model;
 
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class Transfer {
     private Integer transferId;
+    @NotNull(message = "The field `transferTypeId` should not be null.")
     private Integer transferTypeId;
 
     @NotNull(message = "The field `transferStatusId` should not be null.")
@@ -29,6 +31,7 @@ public class Transfer {
         this.accountToId = accountToId;
         this.amount = amount;
     }
+
     public Transfer(int transferTypeId, int transferStatusId, int accountFromId, int accountToId, BigDecimal amount) {
         this.transferTypeId = transferTypeId;
         this.transferStatusId = transferStatusId;

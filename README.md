@@ -1,5 +1,6 @@
 # Module 2 Capstone - TEnmo
-
+## API docs 
+* [Documentation](tenmo-server/readme/APIDOCUMENTATION.md) : `Api docs`
 Congratulations—you've landed a job with TEnmo, whose product is an online payment service for transferring "TE bucks" between friends. However, they don't have a product yet. You've been tasked with writing a RESTful API server and command-line application.
 
 ## Use cases
@@ -150,12 +151,12 @@ Stores the types of transfers that are possible.
 
 | Field                | Description                             |
 | -------------------- | --------------------------------------- |
-| `transfer_type_id`   | Unique identifier of the transfer type  |
+| `transferTypeId`   | Unique identifier of the transfer type  |
 | `transfer_type_desc` | String description of the transfer type |
 
 There are two types of transfers:
 
-| `transfer_type_id` | `transfer_type_desc` | Purpose                                                                |
+| `transferTypeId` | `transfer_type_desc` | Purpose                                                                |
 | ------------------ | -------------------- | ---------------------------------------------------------------------- |
 | 1                  | Request              | Identifies transfer where a user requests money from another user      |
 | 2                  | Send                 | Identifies transfer where a user sends money to another user           |
@@ -166,12 +167,12 @@ Stores the statuses of transfers that are possible.
 
 | Field                  | Description                               |
 | ---------------------- | ----------------------------------------- |
-| `transfer_status_id`   | Unique identifier of the transfer status  |
+| `transferStatusId`   | Unique identifier of the transfer status  |
 | `transfer_status_desc` | String description of the transfer status |
 
 There are three statuses of transfers:
 
-| `transfer_status_id` | `transfer_status_desc` |Purpose                                                                                 |
+| `transferStatusId` | `transfer_status_desc` |Purpose                                                                                 |
 | -------------------- | -------------------- | ---------------------------------------------------------------------------------------  |
 | 1                    | Pending                | Identifies transfer that hasn't occurred yet and requires approval from the other user |
 | 2                    | Approved               | Identifies transfer that has been approved and occurred                                |
@@ -184,8 +185,8 @@ Stores the transfers of TE bucks.
 | Field                | Description                                                                                     |
 | -------------------- | ----------------------------------------------------------------------------------------------- |
 | `transfer_id`        | Unique identifier of the transfer                                                               |
-| `transfer_type_id`   | Foreign key to the `transfer_types` table; identifies type of transfer                          |
-| `transfer_status_id` | Foreign key to the `transfer_statuses` table; identifies status of transfer                     |
+| `transferTypeId`   | Foreign key to the `transfer_types` table; identifies type of transfer                          |
+| `transferStatusId` | Foreign key to the `transfer_statuses` table; identifies status of transfer                     |
 | `account_from`       | Foreign key to the `accounts` table; identifies the account that the funds are being taken from |
 | `account_to`         | Foreign key to the `accounts` table; identifies the account that the funds are going to         |
 | `amount`             | Amount of the transfer                                                                          |
